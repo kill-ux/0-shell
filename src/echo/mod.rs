@@ -1,3 +1,10 @@
+/// Echo the provided arguments to stdout, interpreting escape sequences.
+///
+/// # Parameters
+/// - `args`: slice of argument strings to join and print.
+///
+/// # Returns
+/// - `0` on success.
 pub fn echo(args: &[String]) -> i32 {
     let entry = args.join(" ");
 
@@ -10,6 +17,10 @@ pub fn echo(args: &[String]) -> i32 {
     0
 }
 
+/// Parse a single string for backslash-escaped sequences used by `echo`.
+///
+/// Returns a tuple `(output, newline)` where `output` is the processed
+/// string and `newline` is `true` if a trailing newline should be printed.
 fn parse_entry(entry: &str) -> (String, bool) {
     let mut result = String::new();
     let mut chars = entry.chars().peekable();

@@ -3,6 +3,14 @@ use std::path::PathBuf;
 
 use crate::print_error;
 
+/// Remove files or directories.
+///
+/// # Parameters
+/// - `args`: arguments, may include `-r` for recursive removal and paths.
+/// - `current_dir`: base directory to resolve relative paths.
+///
+/// # Returns
+/// - `0` on success, non-zero on errors.
 pub fn rm(args: &[String], current_dir: &PathBuf) -> i32 {
     let mut recursive = false;
     let mut paths = vec![];

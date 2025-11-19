@@ -8,6 +8,19 @@ use std::io::stdout;
 use std::path::PathBuf;
 use std::process::exit;
 
+/// Execute a built-in command by name, delegating to the appropriate module.
+///
+/// # Parameters
+/// - `command`: command name (e.g., "ls").
+/// - `args`: arguments passed to the command.
+/// - `current_dir`: current working directory (may be modified by commands).
+/// - `history_current_dir`: previous directory used for `cd -` behavior.
+/// - `hist`: reference to the command history.
+/// - `home`: user's home directory path.
+/// - `last_command_staus`: exit status of the last command executed.
+///
+/// # Returns
+/// - exit status code (i32) of the executed command.
 fn exec_command(
     command: &str,
     args: &[String],
@@ -52,6 +65,10 @@ fn exec_command(
     }
 }
 
+/// Main REPL loop: prints prompt, reads input, parses and executes commands.
+///
+/// # Returns
+/// - `Ok(())` on clean exit, or an `io::Error` if writing to stdout/stderr fails.
 fn main() -> Result<(),io::Error> {
     write!(stdout(),
         "\x1b[1;31m

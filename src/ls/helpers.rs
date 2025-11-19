@@ -11,6 +11,10 @@ use std::time::SystemTime;
 use users::*;
 
 // helpers
+/// Return true if the given `path` is executable by any of the permission bits.
+///
+/// # Parameters
+/// - `path`: filesystem path to check.
 pub fn is_executable(path: &Path) -> bool {
     if let Ok(metadata) = fs::metadata(path) {
         let mode = metadata.permissions().mode();
@@ -20,6 +24,11 @@ pub fn is_executable(path: &Path) -> bool {
     }
 }
 
+/// Format UNIX permission bits into a human-readable permission string like `rwxr-xr-x`.
+///
+/// # Parameters
+/// - `permissions`: `Permissions` object from metadata.
+/// - `path`: path used to check for extended attributes.
 pub fn format_permissions(permissions: &Permissions, path: &Path) -> String {
     let mode = permissions.mode();
     let owner = (mode & 0o700) >> 6;
@@ -67,6 +76,10 @@ pub fn format_permissions(permissions: &Permissions, path: &Path) -> String {
     perm_str
 }
 
+/// Return the `User` corresponding to the UID in `metadata` or a synthetic one.
+///
+/// # Parameters
+/// - `metadata`: file metadata used to obtain UID.
 pub fn get_usr(metadata: &Metadata) -> User {
     let uid = metadata.uid();
     let user = match get_user_by_uid(uid) {
@@ -75,6 +88,10 @@ pub fn get_usr(metadata: &Metadata) -> User {
     };
     user
 }
+/// Return the `Group` corresponding to the GID in `metadata` or a synthetic one.
+///
+/// # Parameters
+/// - `metadata`: file metadata used to obtain GID.
 pub fn get_grp(metadata: &Metadata) -> Group {
     let gid = metadata.gid();
 
@@ -84,6 +101,15 @@ pub fn get_grp(metadata: &Metadata) -> Group {
     }
 }
 
+/// Read a symlink and return its target name together with metadata lookup result.
+///
+/// # Parameters
+/// - `symlink_path`: path to the symlink to inspect.
+///
+/// # Returns
+/// - `Ok((meta_result, target_name))` where `meta_result` is the result of calling
+///   `fs::metadata` on the symlink target and `target_name` is the textual target.
+/// - `Err(String)` with an error message when `read_link` fails.
 pub fn get_symlink_target_name(
     symlink_path: &PathBuf,
 ) -> Result<(Result<Metadata, std::io::Error>, String), String> {
@@ -103,6 +129,13 @@ pub fn get_symlink_target_name(
     Ok((meta, target_path.to_string_lossy().to_string()))
 }
 
+/// Format the modification time from metadata into a `ls`-like time string.
+///
+/// # Parameters
+/// - `metadata`: file metadata containing modification time.
+///
+/// # Returns
+/// - formatted time string like `Mar 10 15:04` or `Mar 10  2024` when year differs.
 pub fn get_time(metadata: &Metadata) -> String {
     let name = iana_time_zone::get_timezone().unwrap_or("UTC".to_string());
     let tz = name.parse::<chrono_tz::Tz>().unwrap_or(Tz::UTC);

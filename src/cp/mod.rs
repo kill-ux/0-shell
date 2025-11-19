@@ -2,6 +2,14 @@ use crate::print_error;
 use std::fs;
 use std::path::Path;
 
+/// Copy files to a destination. When multiple sources are provided the
+/// destination must be a directory.
+///
+/// # Parameters
+/// - `args`: list of source paths followed by destination path.
+///
+/// # Returns
+/// - `0` on success, non-zero on errors.
 pub fn cp(args: &[String]) -> i32 {
     // Check if sufficient arguments are provided
     if args.len() < 2 {

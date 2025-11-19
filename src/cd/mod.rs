@@ -5,6 +5,16 @@ use std::{
 
 use crate::print_error;
 
+/// Change the current working directory.
+///
+/// # Parameters
+/// - `tab`: optional argument vector for target path (supports `-` and `~`).
+/// - `history`: mutable reference storing previous directories for `cd -` behavior.
+/// - `current_di`: mutable reference to the current directory path.
+/// - `home`: user's home directory path used for `~` expansion.
+///
+/// # Returns
+/// - `0` on success, `1` on failure.
 pub fn cd(tab: &[String], history: &mut PathBuf, current_di: &mut PathBuf, home: &PathBuf) -> i32 {
     // Default to home directory if no argument is provided
     let mut path = tab.get(0).unwrap_or(&home.display().to_string()).clone();

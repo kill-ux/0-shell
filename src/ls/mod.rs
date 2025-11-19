@@ -26,6 +26,10 @@ struct Fileinfo {
 }
 
 impl Fileinfo {
+    /// Construct a default `Fileinfo` from `metadata`.
+    ///
+    /// # Parameters
+    /// - `metadata`: file metadata to populate the `Fileinfo`.
     fn new(metadata: Metadata) -> Self {
         Self {
             name: String::new(),
@@ -53,6 +57,7 @@ struct Ls {
 }
 
 impl Ls {
+    /// Create a new empty `Ls` state structure.
     fn new() -> Self {
         Self {
             files: vec![],
@@ -67,6 +72,10 @@ impl Ls {
         }
     }
 
+    /// Build a `Fileinfo` for the given `path` relative to the current/previous dir.
+    ///
+    /// # Parameters
+    /// - `path`: either `.` or other file name used to choose cur/prev dir.
     fn get(&self, path: &str) -> Fileinfo {
         let target_path = if path == "." {
             &self.cur_dir
@@ -95,6 +104,15 @@ impl Ls {
         }
     }
 
+    /// Generate the `ls` output for a collection of directory entries.
+    ///
+    /// # Parameters
+    /// - `entries`: list of `DirEntry` for a directory.
+    /// - `file_name`: optional directory name displayed when multiple targets.
+    /// - `is_total`: whether to include the `total` line when in long listing mode.
+    ///
+    /// # Returns
+    /// - `String` containing formatted output for these entries.
     fn myls(
         &mut self,
         entries: Vec<DirEntry>,
@@ -407,6 +425,14 @@ impl Ls {
     }
 }
 
+/// Top-level `ls` command entry point: parse flags and print directory listings.
+///
+/// # Parameters
+/// - `tab`: arguments provided to `ls`.
+/// - `current_dir`: reference to the current working directory.
+///
+/// # Returns
+/// - exit status code: `0` on success, non-zero on errors.
 pub fn ls(tab: &[String], current_dir: &PathBuf) -> i32 {
     let mut ls = Ls::new();
     let mut no_dir = vec![];
@@ -514,6 +540,9 @@ pub fn ls(tab: &[String], current_dir: &PathBuf) -> i32 {
     err_status
 }
 
+/// Return a `DirEntry` for a file path by reading its parent directory.
+///
+/// This is used to obtain a `DirEntry` when the caller only has a `Path`.
 fn dir_entry_from_path(path: &Path) -> io::Result<DirEntry> {
     // Get the file name from the path
     let file_name = path

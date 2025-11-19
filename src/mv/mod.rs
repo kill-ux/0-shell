@@ -3,6 +3,13 @@ use std::path::Path;
 
 use crate::print_error;
 
+/// Move or rename files. If multiple sources are provided, destination must be a directory.
+///
+/// # Parameters
+/// - `args`: list of source paths followed by destination path.
+///
+/// # Returns
+/// - `0` on success, non-zero on errors.
 pub fn mv(args: &[String]) -> i32 {
     // Check for missing source or destination operands
     if args.is_empty() {

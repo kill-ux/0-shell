@@ -27,6 +27,11 @@ pub struct Command {
 }
 
 impl Command {
+    /// Add a parsed token to the command. If the command name is empty it
+    /// becomes the `name`, otherwise the token is appended to `args`.
+    ///
+    /// # Parameters
+    /// - `word`: token to add to the command structure.
     pub fn add_string(&mut self, word: &String) {
         if word.is_empty() {
             return;
@@ -38,6 +43,11 @@ impl Command {
         }
     }
 
+    /// Similar to `add_string` but used when the token comes from a quoted
+    /// section; always pushes the token as-is to `name` or `args`.
+    ///
+    /// # Parameters
+    /// - `word`: token extracted from a quoted section.
     pub fn add_string_whatever(&mut self, word: &String) {
         if self.name.is_empty() {
             self.name = word.clone();
@@ -48,10 +58,21 @@ impl Command {
 }
 
 pub trait CostumSplit {
+    /// Split the string into a `Command` and indicate if quotes are left open.
+    ///
+    /// # Returns
+    /// - `(Command, bool)` where `Command` holds parsed `name` and `args`, and
+    ///   `bool` is `true` when there is an unterminated quote or open backslash.
     fn custom_split(&self) -> (Command, bool);
 }
 
 impl CostumSplit for String {
+    /// Parse the string into a `Command` splitting on whitespace while honoring
+    /// single and double quotes and backslash escapes.
+    ///
+    /// # Returns
+    /// - `(Command, bool)` where the `Command` has `name` and `args`, and the
+    ///   `bool` is `true` if there is an unterminated quote or open backslash.
     fn custom_split(&self) -> (Command, bool) {
         let mut command = Command {
             name: String::new(),
@@ -159,6 +180,10 @@ impl CostumSplit for String {
     }
 }
 
+/// Print an error message to stderr with red coloring.
+///
+/// # Parameters
+/// - `message`: error message to print.
 pub fn print_error(message: &str) {
     eprintln!("\x1b[31m {}\x1b[0m", message)
 }

@@ -3,6 +3,14 @@ use std::{
     fs, io, path::PathBuf
 };
 
+/// Print file contents or read from stdin when no arguments are given.
+///
+/// # Parameters
+/// - `args`: file paths to print (relative to `current_dir`).
+/// - `current_dir`: base directory used to resolve relative paths.
+///
+/// # Returns
+/// - `0` on success, non-zero on error.
 pub fn cat(args: &[String], current_dir: &PathBuf) -> i32 {
     // If no arguments are provided, read and print from stdin
     if args.is_empty() {
